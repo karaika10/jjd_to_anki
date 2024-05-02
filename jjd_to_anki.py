@@ -70,7 +70,7 @@ while True:
 
     # get the first picture in bing search
     if do_get_img:
-        url = "https://cn.bing.com/images/search?q="+wd
+        url = "https://www.bing.com/images/search?q="+wd
 
         # request
         res = requests.get(url)
