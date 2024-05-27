@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import clipboard
+import json
+from colorama import Fore, init
 
 
 deckname = "karaika"
@@ -16,8 +18,18 @@ backname = "背面"
 
 do_get_img = True
 
+
+init()
+print()
+
 while True:
-    wd = input("enter the word you want search(use clipboard as input if there is no input):")
+    try:
+        wd = input(Fore.YELLOW
+                   + "enter the word you want search"
+                   "(use clipboard as input if there is no input):"+Fore.RESET)
+    except:
+        print("canceled")
+        exit()
 
     # use clipboard if no input
     if len(wd) == 0:
@@ -47,9 +59,10 @@ while True:
             meaning = ""
             for p in ps:
                 if p.text.find("読み方") == 0:
+                    pns = p.text[4:]
                     continue
                 meaning = meaning + p.text
-            print("\ni=", i, ": "+meaning+"\n")
+            print("\ni=", i, ": ["+pns+"]"+meaning+"\n")
 
         i = int(input("enter the number you want:"))
     else:
@@ -70,7 +83,7 @@ while True:
 
     # get the first picture in bing search
     if do_get_img:
-        url = "https://www.bing.com/images/search?q="+wd
+        url = "https://cn.bing.com/images/search?q="+wd
 
         # request
         res = requests.get(url)
@@ -91,27 +104,27 @@ while True:
     # send anki query to gui add cards
     if do_get_img:
         anki_query_data = {
-            "action": "guiAddCards",
-            "version": 6,
-            "params": {
-                "note": {
-                    "deckName": deckname,
-                    "modelName": modelname,
-                    "fields": {
-                        frontname: wd,
-                        backname: back,
-                    },
-                    "tags": tag,
-                    "picture": [{
-                        "url": img,
-                        "filename": wd+"."+filetype,
-                        "fields": [
-                            backname
-                        ]
-                    }]
+                "action": "guiAddCards",
+                "version": 6,
+                "params": {
+                    "note": {
+                        "deckName": deckname,
+                        "modelName": modelname,
+                        "fields": {
+                            frontname: wd,
+                            backname: back,
+                            },
+                        "tags": tag,
+                        "picture": [{
+                            "url": img,
+                            "filename": wd+"."+filetype,
+                            "fields": [
+                                backname
+                                ]
+                            }]
+                        }
+                    }
                 }
-            }
-        }
     else:
         anki_query_data = {
                 "action": "guiAddCards",
@@ -123,15 +136,14 @@ while True:
                         "fields": {
                             frontname: wd,
                             backname: back,
-                        },
+                            },
                         "tags": tag,
+                        }
                     }
                 }
-        }
 
-    print(anki_query_data)
+    print(json.dumps(anki_query_data, indent=4, ensure_ascii=False))
     res = requests.post(anki_url, json=anki_query_data)
     res.encoding = res.apparent_encoding
     res = res.text
     print(res)
-
