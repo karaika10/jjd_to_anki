@@ -16,7 +16,7 @@ frontname = "正面"
 # back name. like 'Back'
 backname = "背面"
 
-do_get_img = True
+do_get_img = False
 
 
 init()
@@ -104,27 +104,27 @@ while True:
     # send anki query to gui add cards
     if do_get_img:
         anki_query_data = {
-                "action": "guiAddCards",
-                "version": 6,
-                "params": {
-                    "note": {
-                        "deckName": deckname,
-                        "modelName": modelname,
-                        "fields": {
-                            frontname: wd,
-                            backname: back,
-                            },
-                        "tags": tag,
-                        "picture": [{
-                            "url": img,
-                            "filename": wd+"."+filetype,
-                            "fields": [
-                                backname
-                                ]
-                            }]
-                        }
-                    }
+            "action": "guiAddCards",
+            "version": 6,
+            "params": {
+                "note": {
+                    "deckName": deckname,
+                    "modelName": modelname,
+                    "fields": {
+                        frontname: wd,
+                        backname: back,
+                    },
+                    "tags": tag,
+                    "picture": [{
+                        "url": img,
+                        "filename": wd+"."+filetype,
+                        "fields": [
+                            backname
+                        ]
+                    }]
                 }
+            }
+        }
     else:
         anki_query_data = {
                 "action": "guiAddCards",
@@ -136,11 +136,11 @@ while True:
                         "fields": {
                             frontname: wd,
                             backname: back,
-                            },
+                        },
                         "tags": tag,
-                        }
                     }
                 }
+        }
 
     print(json.dumps(anki_query_data, indent=4, ensure_ascii=False))
     res = requests.post(anki_url, json=anki_query_data)
