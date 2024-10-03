@@ -3,6 +3,4 @@ a simple python script that automatically grab japanese-japanese dictionary data
 
 dictionary source: [weblio](https://www.weblio.jp/category/dictionary/sgkdj).  
 
-image source: [bing search](https://www.bing.com/images)
-
 need [ankiconnect](https://ankiweb.net/shared/info/2055492159)(an add-on for anki) to make this work.
